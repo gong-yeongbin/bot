@@ -1,12 +1,19 @@
-import schedule from 'node-schedule';
 import axios from 'axios';
 import moment from 'moment';
-import dotenv from 'dotenv';
 
+import dotenv from 'dotenv';
 dotenv.config();
 
+import schedule from 'node-schedule';
+const rule = new schedule.RecurrenceRule();
+rule.tz = 'Asia/Seoul';
+
+rule.second = 0;
+rule.minute = 0;
+rule.hour = 10;
+
 // 매일 아침 10시 텔레그램 메세지 전송
-schedule.scheduleJob('0 0 10 * * *', async (cb) => {
+schedule.scheduleJob(rule, async (cb) => {
   const chatId: string = `${process.env.TELEGRAM_CHAT_ID}`;
   const token: string = `${process.env.TELEGRAM_TOKEN}`;
   const telegram_api: string = `https://api.telegram.org/bot${token}/sendmessage`;
