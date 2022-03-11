@@ -31,7 +31,7 @@ export default () => {
     await axios.get(url);
   });
 
-  schedule.scheduleJob('0 0 * * * *', async (cb) => {
+  schedule.scheduleJob('0 0 0/1 * * *', async (cb) => {
     const hour: string = moment().subtract('1', 'hour').format('HH') + '00';
     const isWeather = await axios.get(
       `${process.env.WEATHER_URL}?serviceKey=${
