@@ -3,6 +3,8 @@ import axios from 'axios';
 import moment from 'moment';
 import _ from 'lodash';
 
+import stock from './services/stock';
+
 import schedule from 'node-schedule';
 const rule = new schedule.RecurrenceRule();
 rule.tz = 'Asia/Seoul';
@@ -24,9 +26,12 @@ export default () => {
     const token: string = `${process.env.TELEGRAM_TOKEN}`;
     const telegram_api: string = `https://api.telegram.org/bot${token}/sendmessage`;
 
-    const message: string = `${moment(weather[0].regDt).format(
+    let message: string = `${moment(weather[0].regDt).format(
       'YYYY년 MM월 DD일 HH시'
-    )}\n기온 ${weather[0].T1H}℃\n습도 ${weather[0].REH}%`;
+    )}\n\n기온 ${weather[0].T1H}℃\n습도 ${weather[0].REH}%\n`;
+
+    message = await stock.get(message);
+
     const text: string = encodeURIComponent(message);
 
     const url: string = `${telegram_api}?chat_id=${chatId}&text=${text}`;
