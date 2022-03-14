@@ -1,4 +1,4 @@
-import Weather from './models/Weather';
+import Weather, { IWeather } from './models/Weather';
 import axios from 'axios';
 import moment from 'moment';
 import _ from 'lodash';
@@ -14,16 +14,19 @@ rule.hour = 10;
 export default () => {
   // 매일 아침 10시 텔레그램 메세지 전송
   schedule.scheduleJob(rule, async (cb) => {
+    const weather: IWeather[] = await Weather.find({
+      regDt: { $gte: moment().startOf('day') },
+    })
+      .sort({ regDt: -1 })
+      .limit(1);
+
     const chatId: string = `${process.env.TELEGRAM_CHAT_ID}`;
     const token: string = `${process.env.TELEGRAM_TOKEN}`;
     const telegram_api: string = `https://api.telegram.org/bot${token}/sendmessage`;
 
-    const t1h = 'test data';
-    const reh = 'test data';
-
-    const message: string = `${moment().format(
-      'YYYY-MM-DD HH'
-    )}시\n기온 ${t1h}℃\n습도 ${reh}%`;
+    const message: string = `${moment(weather[0].regDt).format(
+      'YYYY년 MM월 DD일 HH시'
+    )}\n기온 ${weather[0].T1H}℃\n습도 ${weather[0].REH}%`;
     const text: string = encodeURIComponent(message);
 
     const url: string = `${telegram_api}?chat_id=${chatId}&text=${text}`;
@@ -38,7 +41,7 @@ export default () => {
         process.env.WEATHER_SERVICE_KEY
       }&pageNo=1&numOfRows=${hour}&dataType=JSON&base_date=${moment().format(
         'YYYYMMDD'
-      )}&base_time=1000&nx=55&ny=127`
+      )}&base_time=1000&nx=60&ny=127`
     );
 
     const weatherData = isWeather.data.response.body.items.item;

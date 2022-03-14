@@ -26,7 +26,7 @@
     "typescript": "^4.6.2"
   },
   "scripts": {
-    "start": "tsc-watch --onSuccess \"ts-node dist/app.js\"",
+    "start": "TZ=Asia/Seoul tsc-watch --onSuccess \"ts-node dist/app.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
