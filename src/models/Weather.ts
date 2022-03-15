@@ -1,6 +1,6 @@
-import mongoose, { Schema, Model } from 'mongoose';
+import mongoose, { model, Schema, Model } from 'mongoose';
 
-export interface IWeather {
+interface IWeather extends Document {
   T1H: string; //기온
   RN1: string; //1시간 강수량
   UUU: string; //동서바람성분
@@ -12,7 +12,10 @@ export interface IWeather {
   regDt: Date;
 }
 
-const weatherSchema: Schema<IWeather> = new Schema(
+interface IWeatherDocument extends IWeather, Document {}
+interface IWeatherModel extends Model<IWeatherDocument> {}
+
+const weatherSchema: Schema = new Schema(
   {
     T1H: { type: String, required: true, default: '' },
     RN1: { type: String, required: true, default: '' },
@@ -27,4 +30,9 @@ const weatherSchema: Schema<IWeather> = new Schema(
   { versionKey: false }
 );
 
-export default mongoose.model<IWeather>('Weather', weatherSchema);
+const Weather = mongoose.model<IWeatherDocument, IWeatherModel>(
+  'Weather',
+  weatherSchema
+);
+
+export default Weather;

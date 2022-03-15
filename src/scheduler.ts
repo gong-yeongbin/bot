@@ -1,4 +1,4 @@
-import Weather, { IWeather } from './models/Weather';
+import Weather from './models/Weather';
 import axios from 'axios';
 import moment from 'moment';
 import _ from 'lodash';
@@ -16,7 +16,7 @@ rule.hour = 10;
 export default () => {
   // 매일 아침 10시 텔레그램 메세지 전송
   schedule.scheduleJob(rule, async (cb) => {
-    const weather: IWeather[] = await Weather.find({
+    const weather = await Weather.find({
       regDt: { $gte: moment().startOf('day') },
     })
       .sort({ regDt: -1 })
