@@ -44,9 +44,9 @@ export default () => {
     const isWeather = await axios.get(
       `${process.env.WEATHER_URL}?serviceKey=${
         process.env.WEATHER_SERVICE_KEY
-      }&pageNo=1&numOfRows=${hour}&dataType=JSON&base_date=${moment().format(
+      }&pageNo=1&numOfRows=100&dataType=JSON&base_date=${moment().format(
         'YYYYMMDD'
-      )}&base_time=1000&nx=60&ny=127`
+      )}&base_time=${hour}&nx=60&ny=127`
     );
 
     const weatherData = isWeather.data.response.body.items.item;
