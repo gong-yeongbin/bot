@@ -16,9 +16,11 @@ const stock = {
       const stockName: string = $(
         '#_cs_root > div.ar_spot > div > h3 > a > span.stk_nm'
       ).text();
+
       const stockValue: string = $(
-        '#_cs_root > div.ar_spot > div > h3 > a > span.spt_con.dw > strong'
+        '#_cs_root > div.ar_spot > div > h3 > a strong'
       ).text();
+
       message = `${message}\n${stockName} ${stockValue}`;
     }
 
