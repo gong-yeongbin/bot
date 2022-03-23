@@ -1,4 +1,4 @@
-import mongoose, { model, Schema, Model } from 'mongoose';
+import mongoose, { Schema, Model } from 'mongoose';
 
 interface IWeather extends Document {
   T1H: string; //기온
