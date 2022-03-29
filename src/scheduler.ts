@@ -16,62 +16,20 @@ rule.hour = 10;
 export default () => {
   // 매일 아침 10시 텔레그램 메세지 전송
   schedule.scheduleJob(rule, async (cb) => {
-    const weather = await Weather.find({
-      regDt: { $gte: moment().startOf('day') },
-    })
-      .sort({ regDt: -1 })
-      .limit(1);
-
     const chatId: string = `${process.env.TELEGRAM_CHAT_ID}`;
     const token: string = `${process.env.TELEGRAM_TOKEN}`;
     const telegram_api: string = `https://api.telegram.org/bot${token}/sendmessage`;
 
-    let message: string = `${moment(weather[0].regDt).format(
-      'YYYY년 MM월 DD일 HH시'
-    )}\n\n기온 ${weather[0].T1H}℃\n습도 ${weather[0].REH}%\n`;
+    let message: string = `${moment().format('YYYY년 MM월 DD일')}\n`;
 
-    message = await stock.get(message);
+    const myStock = ['애플', '테슬라', '루시드그룹'];
 
-    const text: string = encodeURIComponent(message);
+    for (let i = 0; i < myStock.length; i++) {
+      message = message + (await stock.get(myStock[i]));
+    }
 
-    const url: string = `${telegram_api}?chat_id=${chatId}&text=${text}`;
-
-    await axios.get(url);
-  });
-
-  schedule.scheduleJob('0 0 0/1 * * *', async (cb) => {
-    const hour: string = moment().subtract('1', 'hour').format('HH') + '00';
-    const isWeather = await axios.get(
-      `${process.env.WEATHER_URL}?serviceKey=${
-        process.env.WEATHER_SERVICE_KEY
-      }&pageNo=1&numOfRows=100&dataType=JSON&base_date=${moment().format(
-        'YYYYMMDD'
-      )}&base_time=${hour}&nx=60&ny=127`
+    await axios.get(
+      `${telegram_api}?chat_id=${chatId}&text=${encodeURIComponent(message)}`
     );
-
-    const weatherData = isWeather.data.response.body.items.item;
-
-    const t1h = _.find(weatherData, { category: 'T1H' }).obsrValue;
-    const rn1 = _.find(weatherData, { category: 'RN1' }).obsrValue;
-    const uuu = _.find(weatherData, { category: 'UUU' }).obsrValue;
-    const vvv = _.find(weatherData, { category: 'VVV' }).obsrValue;
-    const reh = _.find(weatherData, { category: 'REH' }).obsrValue;
-    const pty = _.find(weatherData, { category: 'PTY' }).obsrValue;
-    const vec = _.find(weatherData, { category: 'VEC' }).obsrValue;
-    const wsd = _.find(weatherData, { category: 'WSD' }).obsrValue;
-
-    const weatherInstance = new Weather();
-    weatherInstance.T1H = t1h;
-    weatherInstance.RN1 = rn1;
-    weatherInstance.UUU = uuu;
-    weatherInstance.VVV = vvv;
-    weatherInstance.REH = reh;
-    weatherInstance.PTY = pty;
-    weatherInstance.VEC = vec;
-    weatherInstance.WSD = wsd;
-
-    weatherInstance.save((error, result) => {
-      if (error) console.log(error);
-    });
   });
 };
