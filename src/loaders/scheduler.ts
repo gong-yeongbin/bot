@@ -1,9 +1,7 @@
-import Weather from './models/Weather';
 import axios from 'axios';
 import moment from 'moment';
-import _ from 'lodash';
 
-import stock from './services/stock';
+import stock from '../services/stock';
 
 import schedule from 'node-schedule';
 const rule = new schedule.RecurrenceRule();
@@ -11,7 +9,7 @@ rule.tz = 'Asia/Seoul';
 
 rule.second = 0;
 rule.minute = 0;
-rule.hour = 10;
+rule.hour = 8;
 
 export default () => {
   // 매일 아침 10시 텔레그램 메세지 전송
