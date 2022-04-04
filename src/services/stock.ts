@@ -23,6 +23,9 @@ const stock = {
   add: async (stockName: string) => {
     return await Stock.create({ name: stockName });
   },
+  del: async (stockName: string) => {
+    return await Stock.deleteOne({ name: stockName });
+  },
   list: async () => {
     return await Stock.find({});
   },

@@ -11,13 +11,29 @@ export default () => {
     const resp: string = match[1].trim();
 
     try {
-      await Stork.create({
-        name: resp,
-      });
+      await storkService.add(resp);
+
       bot.sendMessage(chatId, `${resp} 추가!`);
     } catch (error) {
       bot.sendMessage(chatId, `${resp} 중복ㅠ`);
     }
+  });
+
+  bot.onText(/\/del(.+)/, async (msg: TelegramBot.Message, match: any) => {
+    const chatId: number = msg.chat.id;
+    const resp: string = match[1].trim();
+
+    await storkService.del(resp);
+    bot.sendMessage(chatId, `${resp} 삭제!`);
+  });
+
+  bot.onText(/\/test(.+)/, async (msg: TelegramBot.Message, match: any) => {
+    const chatId: number = msg.chat.id;
+    const resp: string = match[1].trim();
+
+    const myStock = await storkService.get(resp);
+
+    bot.sendMessage(chatId, `테스트\n${myStock}`);
   });
 
   bot.onText(

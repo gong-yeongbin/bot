@@ -1,7 +1,7 @@
 import axios from 'axios';
 import moment from 'moment';
 
-import stock from '../services/stock';
+import stockService from '../services/stock';
 
 import schedule from 'node-schedule';
 const rule = new schedule.RecurrenceRule();
@@ -19,10 +19,10 @@ export default () => {
 
     let message: string = `${moment().format('YYYY년 MM월 DD일')}\n`;
 
-    const myStock = ['애플', '테슬라', '루시드그룹'];
+    const myStock = await stockService.list();
 
     for (let i = 0; i < myStock.length; i++) {
-      message = message + (await stock.get(myStock[i]));
+      message = message + (await stockService.get(myStock[i].name));
     }
 
     await axios.get(
