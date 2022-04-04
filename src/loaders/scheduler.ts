@@ -12,7 +12,6 @@ rule.minute = 0;
 rule.hour = 8;
 
 export default () => {
-  // 매일 아침 10시 텔레그램 메세지 전송
   schedule.scheduleJob(rule, async (cb) => {
     const chatId: string = `${process.env.TELEGRAM_CHAT_ID}`;
     const token: string = `${process.env.TELEGRAM_TOKEN}`;

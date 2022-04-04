@@ -6,16 +6,19 @@ export default () => {
   const token: string = process.env.TELEGRAM_TOKEN as string;
   const bot: TelegramBot = new TelegramBot(token, { polling: true });
 
-  bot.onText(
-    /\/add(.+)/,
-    async (msg: TelegramBot.Message, match: RegExpExecArray | null) => {
-      const chatId: number = msg.chat.id;
+  bot.onText(/\/add(.+)/, async (msg: TelegramBot.Message, match: any) => {
+    const chatId: number = msg.chat.id;
+    const resp: string = match[1].trim();
 
-      await storkService.add('테슬라');
-
-      bot.sendMessage(chatId, `테슬라 추가!`);
+    try {
+      await Stork.create({
+        name: resp,
+      });
+      bot.sendMessage(chatId, `${resp} 추가!`);
+    } catch (error) {
+      bot.sendMessage(chatId, `${resp} 중복ㅠ`);
     }
-  );
+  });
 
   bot.onText(
     /\/list/,
@@ -26,7 +29,7 @@ export default () => {
       let text: string = '';
 
       for (let i = 0; i < storkInstance.length; i++) {
-        text = `- ${storkInstance[i].name}\n`;
+        text += `- ${storkInstance[i].name}\n`;
       }
 
       bot.sendMessage(chatId, text);

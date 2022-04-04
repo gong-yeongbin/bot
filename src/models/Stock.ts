@@ -9,7 +9,7 @@ interface IStockModel extends Model<IStockDocument> {}
 
 const stockSchema: Schema = new Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, unique: true },
   },
   { versionKey: false }
 );
